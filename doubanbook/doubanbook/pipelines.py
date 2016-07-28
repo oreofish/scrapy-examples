@@ -4,8 +4,8 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import redis
-
-
+from scrapy.conf import settings
+from misc.log import *
 from scrapy import signals
 
 
@@ -48,3 +48,30 @@ class RedisPipeline(object):
 
     def spider_closed(self, spider):
         return
+
+
+class MongoDBPipeline(object):
+    def __init__(self):
+        import pymongo
+        connection = pymongo.MongoClient(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
+        self.db = connection[settings['MONGODB_DB']]
+        self.collection = self.db[settings['MONGODB_COLLECTION']]
+        if self.__get_uniq_key() is not None:
+            self.collection.create_index(self.__get_uniq_key(), unique=True)
+
+    def process_item(self, item, spider):
+        if self.__get_uniq_key() is None:
+            self.collection.insert(dict(item))
+        else:
+            self.collection.update(
+                            {self.__get_uniq_key(): item[self.__get_uniq_key()]},
+                            dict(item),
+                            upsert=True)
+        debug("Item wrote to MongoDB database %s/%s" %
+                    (settings['MONGODB_DB'], settings['MONGODB_COLLECTION']))
+        return item
+
+    def __get_uniq_key(self):
+        if not settings['MONGODB_UNIQ_KEY'] or settings['MONGODB_UNIQ_KEY'] == "":
+            return None
+        return settings['MONGODB_UNIQ_KEY']
