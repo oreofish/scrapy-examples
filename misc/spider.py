@@ -65,8 +65,8 @@ class CommonSpider(CrawlSpider):
     def extract_item(self, sels):
         contents = []
         for i in sels:
-            content = re.sub(r'\s+', ' ', i.extract())
-            if content != ' ':
+            content = re.sub(r'\s+', '', i.extract())
+            if content != '':
                 contents.append(content)
         return contents
 
