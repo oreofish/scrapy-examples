@@ -19,12 +19,12 @@ SPIDER_MODULES = ['doubanbook.spiders']
 NEWSPIDER_MODULE = 'doubanbook.spiders'
 
 
-DOWNLOAD_DELAY = 3
+# DOWNLOAD_DELAY = 1
 COOKIES_ENABLED = False
 
 DOWNLOADER_MIDDLEWARES = {
-    #'doubanbook.middleware.CustomHttpProxyMiddleware': 543,
-    'doubanbook.middleware.CustomUserAgentMiddleware': 545,
+    'doubanbook.middleware.CustomHttpProxyMiddleware': 400,
+    'misc.middleware.CustomUserAgentMiddleware': 401,
 }
 
 ########### Item pipeline
@@ -35,7 +35,7 @@ ITEM_PIPELINES = {
 }
 
 MONGODB_SERVER = 'localhost'
-MONGODB_PORT = 27017
+MONGODB_PORT = 27016
 MONGODB_DB = 'scrapy'
 MONGODB_COLLECTION = 'douban_book'
 MONGODB_UNIQ_KEY = 'link'
@@ -44,5 +44,5 @@ MONGODB_UNIQ_KEY = 'link'
 # Set your own download folder
 DOWNLOAD_FILE_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "download_file")
 
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 

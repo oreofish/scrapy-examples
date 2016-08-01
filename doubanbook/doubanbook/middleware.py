@@ -1,6 +1,5 @@
 from misc.log import *
 from proxy import PROXIES
-from agents import AGENTS
 
 import random
 
@@ -28,12 +27,3 @@ class CustomHttpProxyMiddleware(object):
             return False
         i = random.randint(1, 10)
         return i <= 2
-    
-    
-"""
-change request header nealy every time
-"""
-class CustomUserAgentMiddleware(object):
-    def process_request(self, request, spider):
-        agent = random.choice(AGENTS)
-        request.headers['User-Agent'] = agent
