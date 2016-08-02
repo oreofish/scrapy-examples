@@ -44,5 +44,5 @@ MONGODB_UNIQ_KEY = 'link'
 # Set your own download folder
 DOWNLOAD_FILE_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "download_file")
 
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 

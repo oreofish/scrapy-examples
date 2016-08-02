@@ -12,7 +12,6 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor as sle
 from misc.spider import CommonSpider
 
-from doubanbook.items import *
 from misc.log import *
 
 
@@ -20,7 +19,8 @@ class DoubanBookSpider(CommonSpider):
     name = "doubanbook"
     allowed_domains = ["douban.com"]
     start_urls = [
-        "https://book.douban.com/tag/"
+        "https://book.douban.com/tag/Harry-Potter"
+        #"https://book.douban.com/tag/"
     ]
     rules = [
         #Rule(sle(allow=("/subject/\d+/$")), callback='parse_page'),
