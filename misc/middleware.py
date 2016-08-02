@@ -1,7 +1,7 @@
-from proxy import PROXIES, FREE_PROXIES
+from proxy import LOCAL_PROXIES, FREE_PROXIES
 from agents import AGENTS
-import logging as log
-
+# import logging as log
+from misc.log import *
 import random
 
 
@@ -31,13 +31,33 @@ class CustomHttpProxyFromMysqlMiddleware(object):
         return True
 
 
+class CustomFreeProxyMiddleware(object):
+    def process_request(self, request, spider):
+        # TODO implement complex proxy providing algorithm
+        if self.use_proxy(request):
+            p = random.choice(FREE_PROXIES)
+            try:
+                request.meta['proxy'] = "http://%s" % p['ip_port']
+            except Exception, e:
+                warn("Exception %s" % e)
 
-class CustomHttpProxyMiddleware(object):
+    def use_proxy(self, request):
+        """
+        using direct download for depth <= 2
+        using proxy with probability 0.3
+        """
+        if "depth" in request.meta and int(request.meta['depth']) <= 2:
+            return False
+        i = random.randint(1, 10)
+        return i <= 2
+
+
+class CustomLocalProxyMiddleware(object):
 
     def process_request(self, request, spider):
         # TODO implement complex proxy providing algorithm
         if self.use_proxy(request):
-            p = random.choice(PROXIES)
+            p = random.choice(LOCAL_PROXIES)
             try:
                 request.meta['proxy'] = "http://%s" % p['ip_port']
             except Exception, e:

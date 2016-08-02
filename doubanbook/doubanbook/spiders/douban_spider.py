@@ -10,42 +10,40 @@ except:
 from scrapy.utils.response import get_base_url
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor as sle
-
+from misc.spider import CommonSpider
 
 from doubanbook.items import *
 from misc.log import *
 
 
-class DoubanBookSpider(CrawlSpider):
+class DoubanBookSpider(CommonSpider):
     name = "doubanbook"
     allowed_domains = ["douban.com"]
     start_urls = [
         "https://book.douban.com/tag/"
     ]
     rules = [
-        Rule(sle(allow=("/subject/\d+/$")), callback='parse_2'),
-        Rule(sle(allow=("/tag/[^/]+$", )), follow=True),
+        #Rule(sle(allow=("/subject/\d+/$")), callback='parse_page'),
+        Rule(sle(allow=("/tag/[^/]+$", )), follow=True, callback='parse_tag'),
         #Rule(sle(allow=("/tag/$", )), follow=True),
     ]
 
-    def parse_2(self, response):
-        items = []
-        sel = Selector(response)
-        sites = sel.css('#wrapper')
-        for site in sites:
-            item = DoubanSubjectItem()
-            item['title'] = site.css('h1 span::text').extract()
-            item['link'] = response.url
-            item['content_intro'] = site.css('#link-report .intro p::text').extract()
-            items.append(item)
-            # print repr(item).decode("unicode-escape") + '\n'
-            print item
-        # info('parsed ' + str(response))
-        return items
+    subject_css_rules = {
+        '.subject-item': {
+            'title': 'h2 a::text',
+            'link':  'h2 a::attr(href)',
+            'pub':   '.pub::text',
+            'star':  '.star .rating_nums::text',
+            'times': '.star .pl::text',
+            'desc':  'p::text',
+            'price': '.ft .buy-info a::text',
+        }
+    }
 
-    def parse_1(self, response):
-        # url cannot encode to Chinese easily.. XXX
-        info('parsed ' + str(response))
+    def parse_tag(self, response):
+        info('======================= Parse '+response.url)
+        x = self.parse_with_rules(response, self.subject_css_rules, dict)
+        return x[0].values()[0]
 
     def process_request(self, request):
         info('process ' + str(request))

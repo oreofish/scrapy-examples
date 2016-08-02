@@ -19,11 +19,11 @@ SPIDER_MODULES = ['doubanbook.spiders']
 NEWSPIDER_MODULE = 'doubanbook.spiders'
 
 
-# DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 3
 COOKIES_ENABLED = False
 
 DOWNLOADER_MIDDLEWARES = {
-    'doubanbook.middleware.CustomHttpProxyMiddleware': 400,
+    'misc.middleware.CustomFreeProxyMiddleware': 400,
     'misc.middleware.CustomUserAgentMiddleware': 401,
 }
 
@@ -31,7 +31,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     #'doubanbook.pipelines.JsonWithEncodingPipeline': 300,
     #'doubanbook.pipelines.RedisPipeline': 301,
-    'doubanbook.pipelines.MongoDBPipeline': 302,
+    'misc.pipelines.MongoDBPipeline': 302,
 }
 
 MONGODB_SERVER = 'localhost'
