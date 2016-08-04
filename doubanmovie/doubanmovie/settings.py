@@ -11,7 +11,6 @@ import os
 from os.path import dirname
 path = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
 sys.path.append(path)
-from misc.log import *
 
 BOT_NAME = 'doubanmovie'
 NEWSPIDER_MODULE = BOT_NAME + '.spiders'
@@ -19,12 +18,12 @@ SPIDER_MODULES = [NEWSPIDER_MODULE]
 
 
 DOWNLOADER_MIDDLEWARES = {
-    'misc.middleware.CustomFreeProxyMiddleware': 400,
-    'misc.middleware.CustomUserAgentMiddleware': 401,
+    'common.middleware.CustomFreeProxyMiddleware': 400,
+    'common.middleware.CustomUserAgentMiddleware': 401,
     'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware': 500,
 }
 HTTPCACHE_ENABLED = True
-HTTPCACHE_DIR = BOT_NAME+'cache'
+HTTPCACHE_DIR = '/Users/xing/Documents/git/python/scrapy-examples/scrapyd/'+BOT_NAME+'cache'
 HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.DummyPolicy'
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
@@ -35,8 +34,8 @@ DOWNLOAD_FILE_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 
 ########### Item pipeline
 ITEM_PIPELINES = {
-    #'misc.pipelines.JsonWithEncodingPipeline': 300,
-    'misc.pipelines.MongoDBPipeline': 302,
+    #'doubanmovie.common.pipelines.JsonWithEncodingPipeline': 300,
+    'common.pipelines.MongoDBPipeline': 302,
 }
 MONGODB_SERVER = 'localhost'
 MONGODB_PORT = 27016
@@ -49,4 +48,5 @@ MONGODB_UNIQ_KEY = 'link'
 LOG_LEVEL = 'INFO'
 DOWNLOAD_DELAY = 1
 COOKIES_ENABLED = False
+
 

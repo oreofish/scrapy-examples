@@ -15,8 +15,8 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor as sle
 from scrapy.loader import ItemLoader
 
-from misc.log import *
-from misc.spider import CommonSpider
+from common.log import *
+from common.spider import CommonSpider
 
 
 class doubanmovieSpider(CommonSpider):
@@ -24,8 +24,8 @@ class doubanmovieSpider(CommonSpider):
     allowed_domains = ["movie.douban.com"]
 
     start_urls = []
-    #for year in range(1895, 2016):
-    for year in range(1987, 1988):
+    #for year in range(1987, 1988):
+    for year in range(1895, 2016):
         start_urls.append("https://movie.douban.com/tag/" + str(year))
 
     rules = [
