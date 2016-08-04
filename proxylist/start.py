@@ -2,4 +2,4 @@
 
 from scrapy.cmdline import execute
 
-execute(['scrapy', 'crawl', 'doubanbook'])
+execute(['scrapy', 'crawl', 'proxylist'])

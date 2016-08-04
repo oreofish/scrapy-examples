@@ -13,51 +13,36 @@ except:
 from scrapy.utils.response import get_base_url
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor as sle
+from scrapy.loader import ItemLoader
 
-
-from doubanmovie.items import *
 from misc.log import *
 from misc.spider import CommonSpider
 
 
 class doubanmovieSpider(CommonSpider):
     name = "doubanmovie"
-    allowed_domains = ["douban.com"]
-    start_urls = [
-        #"https://movie.douban.com/tag/",
-        "https://movie.douban.com/chart"
-    ]
+    allowed_domains = ["movie.douban.com"]
+
+    start_urls = []
+    #for year in range(1895, 2016):
+    for year in range(1987, 1988):
+        start_urls.append("https://movie.douban.com/tag/" + str(year))
+
     rules = [
-        #Rule(sle(allow=("/tag/[0-9]{4}$")), follow=True),
-        #Rule(sle(allow=("/tag/[0-9]{4}/?start=[0-9]{2,4}&type=T$")), follow=True),
-        #Rule(sle(allow=("/subject/[0-9]+$")), callback='parse_1'),
-        Rule(sle(allow=("/subject/[0-9]+/$")), callback='parse_1', follow=True),
+        Rule(sle(allow=("/tag/[0-9]{4}.start=[0-9]{2,4}"), restrict_xpaths="//div[@class='article']"), follow=True),
+        Rule(sle(allow=("/subject/[0-9]+/$"), restrict_xpaths="//div[@class='article']"), callback='parse_subject', follow=True),
     ]
 
-    list_css_rules = { 
-        '.linkto': {
-            'url': 'a::attr(href)',
-            'name': 'a::text',
-        }
-    }   
-
-    list_css_rules_2 = { 
-        '#listZone .Q-tpWrap': {
-            'url': '.linkto::attr(href)',
-            'name': '.linkto::text'
-        }   
-    }   
-
-    content_css_rules = { 
-        'rating_per': '.rating_per::text',
-        'rating_num': '.rating_num::text',
-        'title': 'h1 span:nth-child(1)::text',
-        'rating_people': '.rating_people span::text',
-    }
-
-    def parse_1(self, response):
+    def parse_subject(self, response):
         info('Parse '+response.url)
-        x = self.parse_with_rules(response, self.content_css_rules, dict)
-        return x
-        #print(repr(x).decode('raw_unicode_escape'))
-        # return self.parse_with_rules(response, self.css_rules, doubanmovieItem)
+        l = ItemLoader({}, response.selector)
+        l.add_value('link', response.url)
+        l.add_css('title', '#content h1 span[property]::text')
+        l.add_css('year', '#content h1 span[class]::text')
+        l.add_css('star', '.rating_num::text')
+        return l.load_item()
+
+
+    def closed(self, reason):
+        info("DoubanBookSpider Closed:" + reason)
+

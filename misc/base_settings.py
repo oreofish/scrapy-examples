@@ -13,36 +13,30 @@ from os.path import dirname
 path = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
 sys.path.append(path)
 
-BOT_NAME = 'doubanbook'
-
-SPIDER_MODULES = ['doubanbook.spiders']
-NEWSPIDER_MODULE = 'doubanbook.spiders'
-
-
-DOWNLOAD_DELAY = 1
-COOKIES_ENABLED = False
-
 DOWNLOADER_MIDDLEWARES = {
     'misc.middleware.CustomFreeProxyMiddleware': 400,
     'misc.middleware.CustomUserAgentMiddleware': 401,
 }
 
-########### Item pipeline
-ITEM_PIPELINES = {
-    #'doubanbook.pipelines.JsonWithEncodingPipeline': 300,
-    #'doubanbook.pipelines.RedisPipeline': 301,
-    'misc.pipelines.MongoDBPipeline': 302,
-}
-
-MONGODB_SERVER = 'localhost'
-MONGODB_PORT = 27016
-MONGODB_DB = 'scrapy'
-MONGODB_COLLECTION = 'douban_book'
-MONGODB_UNIQ_KEY = 'link'
-###########
-
 # Set your own download folder
 DOWNLOAD_FILE_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "download_file")
 
+BOT_NAME = 'undefined'
+NEWSPIDER_MODULE = BOT_NAME + '.spiders'
+SPIDER_MODULES = [NEWSPIDER_MODULE]
+
+########### Item pipeline
+ITEM_PIPELINES = {
+    'misc.pipelines.MongoDBPipeline': 302,
+}
+MONGODB_SERVER = 'localhost'
+MONGODB_PORT = 27016
+MONGODB_DB = 'scrapy'
+MONGODB_COLLECTION = BOT_NAME
+MONGODB_UNIQ_KEY = '_id'
+###########
+
 LOG_LEVEL = 'INFO'
+DOWNLOAD_DELAY = 3
+COOKIES_ENABLED = False
 
