@@ -36,6 +36,7 @@ class CustomFreeProxyMiddleware(object):
         # TODO implement complex proxy providing algorithm
         if self.use_proxy(request):
             p = random.choice(FREE_PROXIES)
+            info("==== use proxy: http://%s" % p['ip_port'])
             try:
                 request.meta['proxy'] = "http://%s" % p['ip_port']
             except Exception, e:
