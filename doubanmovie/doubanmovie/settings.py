@@ -35,12 +35,14 @@ HTTPCACHE_DIR = BASE_DIR + BOT_NAME + '.cache'
 HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.DummyPolicy'
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 DOWNLOAD_FILE_FOLDER = BASE_DIR + "download_file"  # Set your own download folder
-
+AUTO_NO_PROXY_TIMEOUT = 200
+AUTO_PROXY_FILE = BASE_DIR + 'autoproxylist.txt'
 
 # ========================= DOWNLOADER_MIDDLEWARES =========================
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
-    'common.randomproxy.RandomProxy': 100,
+    'common.auto_proxy.HttpProxyMiddleware.HttpProxyMiddleware': 100,
+    # 'common.randomproxy.RandomProxy': 100,
     # 'common.middleware.CustomFreeProxyMiddleware': 101,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
     'common.middleware.CustomUserAgentMiddleware': 401,
